@@ -1,13 +1,23 @@
-import { Schema, model, InferSchemaType } from 'mongoose';
+import mongoose, { Document, Schema, model } from 'mongoose';
 
-const assessmentSchema = new Schema(
-  {
-    clerkId: { type: String, required: true, index: true },
-    testType: { type: String, required: true }, // e.g., "Vertical Jump"
-    score: { type: Number, required: true },
-  },
-  { timestamps: true }
+export interface IAssessment extends Document {
+   clerkId: mongoose.Types.ObjectId;
+   testType: string;
+   score: number;
+}
+
+const assessmentSchema: Schema<IAssessment> = new Schema(
+   {
+      clerkId: {
+         type: Schema.Types.ObjectId,
+         ref: 'User',
+         required: true,
+         index: true,
+      },
+      testType: { type: String, required: true }, // e.g., "Vertical Jump"
+      score: { type: Number, required: true },
+   },
+   { timestamps: true }
 );
 
-export type Assessment = InferSchemaType<typeof assessmentSchema>;
-export default model<Assessment>('Assessment', assessmentSchema);
+export default model<IAssessment>('Assessment', assessmentSchema);
