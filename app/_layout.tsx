@@ -5,7 +5,7 @@ import './global.css';
 
 export default function RootLayout() {
    return (
-      <ClerkProvider tokenCache={tokenCache}>
+      <ClerkProvider tokenCache={tokenCache} publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY}>
          <Stack />
       </ClerkProvider>
    );
