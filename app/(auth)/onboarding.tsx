@@ -38,7 +38,7 @@ const Welcome = () => {
                >
                   <Image
                      source={item.image}
-                     className='w-full h-[300px] rounded-md'
+                     className='w-full h-[300px]'
                      resizeMode='contain'
                   />
                   <View className='flex flex-row items-center justify-center w-full mt-10'>
@@ -58,7 +58,7 @@ const Welcome = () => {
                   ? router.replace('/(auth)/login')
                   : swiperRef.current?.scrollBy(1);
             }}
-            className='w-full rounded-full p-3 mb-2 flex flex-row justify-center items-center shadow-md shadow-neutral-400/70 bg-[#0286FF] mt-10'
+            className='w-4/5 rounded-full p-3 mb-2 flex flex-row justify-center items-center shadow-md shadow-neutral-400/70 bg-[#0286FF] mt-10'
          >
             <Text className='text-lg font-bold text-white'>
                {isLastSlide ? 'Get Started' : 'Next'}
