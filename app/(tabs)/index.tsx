@@ -1,4 +1,3 @@
-// app/(tabs)/index.tsx
 import React from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
 import { Link } from 'expo-router';

@@ -1,7 +1,7 @@
-// app/(tabs)/assessment.tsx
 import React from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 const tests = [
   { id: 'vertical-jump', name: 'Vertical Jump', icon: 'arrow-up' },
@@ -10,8 +10,14 @@ const tests = [
 ];
 
 export default function AssessmentScreen() {
-  const handlePress = (testName: string) => {
-    Alert.alert(`Start ${testName}`, 'Camera + AI analysis will be integrated here.');
+  const router = useRouter();
+
+  const handlePress = (testId: string, testName: string) => {
+    // Navigate to the new live assessment screen with parameters
+    router.push({
+      pathname: '/live-assessment',
+      params: { testId, testName },
+    });
   };
 
   return (
@@ -21,7 +27,7 @@ export default function AssessmentScreen() {
         {tests.map((test) => (
           <TouchableOpacity
             key={test.id}
-            onPress={() => handlePress(test.name)}
+            onPress={() => handlePress(test.id, test.name)}
             className="bg-gray-50 p-5 rounded-lg border border-gray-200 flex-row items-center justify-between"
           >
             <View className="flex-row items-center">
