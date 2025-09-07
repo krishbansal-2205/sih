@@ -24,7 +24,7 @@ function InitialLayout() {
       if (isSignedIn && inAuthGroup) {
          router.replace('/');
       } else if (!isSignedIn && !inAuthGroup) {
-         router.replace('/login');
+         router.replace('/(auth)/onboarding');
       }
    }, [isLoaded, isSignedIn, segments, router]);
 
