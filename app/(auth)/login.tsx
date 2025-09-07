@@ -1,4 +1,3 @@
-// app/(auth)/login.tsx
 import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator, Alert, Platform } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
@@ -12,14 +11,12 @@ export default function LoginScreen() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  // If already signed in, send to app
   useEffect(() => {
     if (isLoaded && isSignedIn) {
       router.replace('/');
     }
   }, [isLoaded, isSignedIn, router]);
 
-  // warm up web browser only on native
   useEffect(() => {
     if (Platform.OS !== 'web') {
       void WebBrowser.warmUpAsync();
@@ -32,7 +29,6 @@ export default function LoginScreen() {
   const onPressGoogle = useCallback(async () => {
     setLoading(true);
     try {
-      // On web useProxy:true so Expo's dev OAuth proxy works. On native useProxy:false.
       const redirectUrl = AuthSession.makeRedirectUri();
 
       const result = await startSSOFlow({
@@ -42,16 +38,13 @@ export default function LoginScreen() {
 
       if (result?.createdSessionId && result.setActive) {
         await result.setActive({ session: result.createdSessionId });
-        // navigate to the app
         router.replace('/');
       } else {
-        // additional steps (e.g., required data collection) may be required; Clerk will return objects
         console.log('SSO flow returned (inspect result):', result);
       }
     } catch (err: any) {
-      // handle the common "already signed in" message gracefully
       const msg = err?.message ?? String(err);
-      if (msg.includes("already signed in")) {
+      if (msg.includes('already signed in')) {
         router.replace('/');
         return;
       }

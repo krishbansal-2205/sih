@@ -1,4 +1,3 @@
-// app/_layout.tsx
 import { ClerkProvider, useAuth } from '@clerk/clerk-expo';
 import { tokenCache } from '@clerk/clerk-expo/token-cache';
 import { Slot, useRouter, useSegments } from 'expo-router';
@@ -6,8 +5,6 @@ import React, { useEffect } from 'react';
 import './global.css';
 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
-
-// app/_layout.tsx
 
 function InitialLayout() {
    const { isLoaded, isSignedIn } = useAuth();

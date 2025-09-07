@@ -1,4 +1,3 @@
-// app/(tabs)/index.tsx
 import { useUser } from '@clerk/clerk-expo';
 import { FontAwesome } from '@expo/vector-icons';
 import { Link } from 'expo-router';
@@ -27,15 +26,12 @@ export default function DashboardScreen() {
                </Text>
             </View>
          </View>
-
-         <Link href='/assessment' asChild>
-            <TouchableOpacity className='bg-indigo-600 py-4 px-6 rounded-xl flex-row items-center justify-center shadow-lg'>
-               <FontAwesome name='play-circle' size={20} color='white' />
-               <Text className='text-white text-lg font-bold ml-3'>
-                  Start New Assessment
-               </Text>
-            </TouchableOpacity>
-         </Link>
-      </View>
-   );
+      <Link href="/assessment" asChild>
+        <TouchableOpacity className="bg-indigo-600 py-4 px-6 rounded-xl flex-row items-center justify-center shadow-lg">
+          <FontAwesome name="play-circle" size={20} color="white" />
+          <Text className="text-white text-lg font-bold ml-3">Start New Assessment</Text>
+        </TouchableOpacity>
+      </Link>
+    </View>
+  );
 }
