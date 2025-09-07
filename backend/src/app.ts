@@ -17,7 +17,8 @@ app.set('trust proxy', 1);
 app.use(helmet());
 app.use(
    cors({
-      origin: env.CORS_ORIGIN ? env.CORS_ORIGIN.split(',') : true,
+      // origin: env.CORS_ORIGIN ? env.CORS_ORIGIN.split(',') : true,
+      origin: '*',
       credentials: true,
    })
 );
