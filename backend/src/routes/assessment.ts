@@ -1,51 +1,19 @@
-import { getAuth, requireAuth } from '@clerk/express';
-import { Request, Response, Router } from 'express';
-import { z } from 'zod';
-import Assessment from '../models/Assessment';
+import express from 'express';
+import { requireAuth } from '../middleware/requireAuth';
+import { createAssessment, getMyAssessments } from '../controllers/assessment';
+import { upload } from '../utils/multerConfig';
+import { processAssessmentVideo } from '../controllers/assessment';
 
-const router = Router();
 
-const createSchema = z.object({
-   testType: z.string().min(1),
-   score: z.number().finite(),
-});
+const router = express.Router();
 
 router.post(
-   '/',
-   requireAuth(),
-   async (req: Request, res: Response): Promise<void> => {
-      try {
-         const { userId } = getAuth(req); // string | null
-         if (!userId) res.status(401).end(); // satisfies TS
-
-         const payload = createSchema.parse(req.body);
-         const created = await Assessment.create({
-            clerkId: userId,
-            ...payload,
-         });
-         res.status(201).json(created);
-      } catch (error) {
-         res.status(400).json({ error: (error as Error).message });
-      }
-   }
+  '/:id/process-video',
+  requireAuth,
+  upload.single('video'), // 'video' is the form-data key
+  processAssessmentVideo
 );
-
-router.get(
-   '/me',
-   requireAuth(),
-   async (req: Request, res: Response): Promise<void> => {
-      try {
-         const { userId } = getAuth(req);
-         if (!userId) res.status(401).end();
-
-         const items = await Assessment.find({ clerkId: userId }).sort({
-            createdAt: -1,
-         });
-         res.json(items);
-      } catch (error) {
-         res.status(400).json({ error: (error as Error).message });
-      }
-   }
-);
+router.post('/', requireAuth, createAssessment);
+router.get('/', requireAuth, getMyAssessments);
 
 export default router;
