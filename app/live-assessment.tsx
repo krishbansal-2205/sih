@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, ActivityIndicator ,StyleSheet} from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 // 1. Import CameraView (the component) and other necessary exports
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera'; 
@@ -12,25 +12,20 @@ export default function LiveAssessmentScreen() {
 
   const [permission, requestPermission] = useCameraPermissions();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-
-  // This state will eventually be driven by the MediaPipe model
   const [score, setScore] = useState(0);
   const [feedback, setFeedback] = useState('Position yourself in the frame and press Start.');
 
   useEffect(() => {
-    // Request camera permissions on screen load
     if (!permission?.granted) {
       requestPermission();
     }
   }, []);
 
   if (!permission) {
-    // Camera permissions are still loading
     return <View className="flex-1 justify-center items-center"><ActivityIndicator size="large" /></View>;
   }
 
   if (!permission.granted) {
-    // Camera permissions are not granted yet
     return (
       <View className="flex-1 justify-center items-center p-6 bg-white">
         <Text className="text-center text-lg mb-4 text-gray-700">We need your permission to use the camera</Text>
@@ -40,7 +35,6 @@ export default function LiveAssessmentScreen() {
       </View>
     );
   }
-
   const handleStart = () => {
     setIsAnalyzing(true);
     setScore(0);
@@ -80,41 +74,30 @@ export default function LiveAssessmentScreen() {
 
   return (
     <View className="flex-1 bg-black">
-      {/* 2. Use CameraView as the JSX component */}
+      {/* MODIFIED: Added style={StyleSheet.absoluteFill} to force the camera to cover the screen */}
       <CameraView 
-        className="flex-1" 
-        facing='front' // Use 'facing' prop instead of 'type'
+        style={StyleSheet.absoluteFill}
+        facing='front'
       >
-        {/* UI Overlay */}
+        {/* The UI Overlay sits on top and is unchanged */}
         <View className="flex-1 bg-black/30 justify-between p-6 pt-16">
-          {/* Header */}
           <View className="flex-row items-center justify-between">
             <Text className="text-2xl font-bold text-white">{testName}</Text>
             <TouchableOpacity onPress={() => router.back()} className="h-10 w-10 justify-center items-center">
                 <FontAwesome name="close" size={24} color="white" />
             </TouchableOpacity>
           </View>
-
-          {/* Center Content: Score and Feedback */}
           <View className="items-center">
             {renderScoreDisplay()}
             <Text className="text-lg text-white/90 mt-4 text-center px-4">{feedback}</Text>
           </View>
-
-          {/* Footer: Controls */}
           <View className="items-center mb-6">
             {!isAnalyzing ? (
-              <TouchableOpacity
-                onPress={handleStart}
-                className="bg-green-600 w-24 h-24 rounded-full justify-center items-center border-4 border-white/50"
-              >
+              <TouchableOpacity onPress={handleStart} className="bg-green-600 w-24 h-24 rounded-full justify-center items-center border-4 border-white/50">
                 <Text className="text-white text-2xl font-bold">Start</Text>
               </TouchableOpacity>
             ) : (
-              <TouchableOpacity
-                onPress={handleStopAndSave}
-                className="bg-red-600 w-24 h-24 rounded-full justify-center items-center border-4 border-white/50"
-              >
+              <TouchableOpacity onPress={handleStopAndSave} className="bg-red-600 w-24 h-24 rounded-full justify-center items-center border-4 border-white/50">
                 <Text className="text-white text-xl font-bold">Stop</Text>
               </TouchableOpacity>
             )}

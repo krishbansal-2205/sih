@@ -1,14 +1,13 @@
 // @/app/(tabs)/leaderboard.tsx
 import { useUser } from '@clerk/clerk-expo';
 import { FontAwesome } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import React from 'react'; // MODIFIED: Removed useState
 import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 
 // --- Type Definitions ---
-type TimeFilterOption = 'Weekly' | 'Monthly' | 'All Time';
-
+// MODIFIED: TimeFilterOption is no longer needed
 type LeaderboardUser = {
   rank: number;
   name: string;
@@ -18,21 +17,21 @@ type LeaderboardUser = {
 };
 
 // --- Dummy Data ---
+// MODIFIED: Only one set of data is needed now
 const leaderboardData: LeaderboardUser[] = [
   { rank: 1, name: 'Radha', points: 2143, avatar: 'https://i.pravatar.cc/150?img=25' },
-  { rank: 2, name: 'You', points: 1856, avatar: '', isCurrentUser: true }, // Avatar will be fetched from useUser
+  { rank: 2, name: 'You', points: 1856, avatar: '', isCurrentUser: true },
   { rank: 3, name: 'Raman', points: 1789, avatar: 'https://i.pravatar.cc/150?img=68' },
   { rank: 4, name: 'James', points: 1089, avatar: 'https://i.pravatar.cc/150?img=32' },
   { rank: 5, name: 'Maria', points: 987, avatar: 'https://i.pravatar.cc/150?img=31' },
   { rank: 6, name: 'Li Wei', points: 850, avatar: 'https://i.pravatar.cc/150?img=11' },
 ];
 
-const currentUserRank = leaderboardData.find(u => u.isCurrentUser)?.rank || 0;
+const currentUser = leaderboardData.find(u => u.isCurrentUser);
 // --- End Dummy Data ---
 
-
 export default function LeaderboardScreen() {
-  const [activeFilter, setActiveFilter] = useState<TimeFilterOption>('Weekly');
+  // MODIFIED: All state and effects have been removed.
 
   return (
     <SafeAreaView edges={['top']} className="flex-1 bg-brand-background">
@@ -51,12 +50,11 @@ export default function LeaderboardScreen() {
         </LinearGradient>
 
         {/* --- Content --- */}
-        <View className="px-6 -mt-8">
-            {/* --- Time Filter --- */}
-            <TimeFilter active={activeFilter} setActive={setActiveFilter} />
+        <View className="px-6 pt-6">
+            {/* --- Time Filter REMOVED --- */}
 
             {/* --- Your Rank Card --- */}
-            <UserRankCard rank={currentUserRank} points={1247} />
+            {currentUser && <UserRankCard rank={currentUser.rank} points={currentUser.points} />}
 
             {/* --- Top 3 Podium --- */}
             <Podium topThree={leaderboardData.slice(0, 3)} />
@@ -77,24 +75,7 @@ export default function LeaderboardScreen() {
 }
 
 
-// --- Reusable Components ---
-
-const TimeFilter = ({ active, setActive }: { active: TimeFilterOption; setActive: (option: TimeFilterOption) => void; }) => {
-    const filters: TimeFilterOption[] = ['Weekly', 'Monthly', 'All Time'];
-    return (
-        <View className="flex-row bg-white p-1 rounded-full shadow-md">
-            {filters.map(filter => (
-                <TouchableOpacity 
-                    key={filter} 
-                    onPress={() => setActive(filter)}
-                    className={`flex-1 py-2 rounded-full ${active === filter ? 'bg-brand-blue shadow' : ''}`}
-                >
-                    <Text className={`text-center font-bold ${active === filter ? 'text-white' : 'text-text-secondary'}`}>{filter}</Text>
-                </TouchableOpacity>
-            ))}
-        </View>
-    );
-};
+// --- Reusable Components (TimeFilter component is now gone) ---
 
 const UserRankCard = ({ rank, points }: { rank: number, points: number }) => (
     <View className="bg-rose-50 border border-rose-200 rounded-2xl p-4 mt-6 flex-row justify-between items-center">
@@ -118,11 +99,10 @@ const Podium = ({ topThree }: { topThree: LeaderboardUser[] }) => {
 
     if (!first || !second || !third) return null;
 
-    second.avatar = second.isCurrentUser ? user?.imageUrl ?? '' : second.avatar;
+    if (second.isCurrentUser) second.avatar = user?.imageUrl ?? '';
     
     return (
         <View className="flex-row justify-center items-end mt-8 space-x-4">
-            {/* 2nd Place */}
             <View className="items-center">
                 <Image source={{ uri: second.avatar }} className="w-16 h-16 rounded-full border-4 border-gray-300 mb-2"/>
                 <View className="bg-white p-3 rounded-lg w-24 items-center shadow">
@@ -130,8 +110,6 @@ const Podium = ({ topThree }: { topThree: LeaderboardUser[] }) => {
                     <Text className="text-text-secondary text-sm">{second.points.toLocaleString()}</Text>
                 </View>
             </View>
-
-            {/* 1st Place */}
             <View className="items-center">
                 <View className="relative">
                     <Image source={{ uri: first.avatar }} className="w-20 h-20 rounded-full border-4 border-yellow-400 mb-2"/>
@@ -142,8 +120,6 @@ const Podium = ({ topThree }: { topThree: LeaderboardUser[] }) => {
                     <Text className="text-white/80 text-sm">{first.points.toLocaleString()}</Text>
                 </LinearGradient>
             </View>
-
-            {/* 3rd Place */}
             <View className="items-center">
                  <Image source={{ uri: third.avatar }} className="w-16 h-16 rounded-full border-4 border-orange-300 mb-2"/>
                  <View className="bg-white p-3 rounded-lg w-24 items-center shadow">

@@ -3,6 +3,7 @@ import { tokenCache } from '@clerk/clerk-expo/token-cache';
 import { Slot, useRouter, useSegments } from 'expo-router';
 import React, { useEffect } from 'react';
 import './global.css';
+import { StatusBar } from 'expo-status-bar';
 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
@@ -24,6 +25,9 @@ function InitialLayout() {
          router.replace('/(auth)/onboarding');
       }
    }, [isLoaded, isSignedIn, segments, router]);
+   if (!isLoaded) {
+      return null; // Or a loading spinner
+   }
 
    return <Slot />;
 }
@@ -39,7 +43,8 @@ export default function RootLayout() {
       <ClerkProvider
          tokenCache={tokenCache}
          publishableKey={CLERK_PUBLISHABLE_KEY!}
-      >
+      >  
+         <StatusBar hidden />
          <InitialLayout />
       </ClerkProvider>
    );
